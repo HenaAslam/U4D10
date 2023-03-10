@@ -18,12 +18,12 @@ mediasRouter.post(
     try {
       const newMedia = {
         ...req.body,
-        imbdId: uniqid(),
+        imdbID: uniqid(),
       };
       const mediasArray = await getMedias();
       mediasArray.push(newMedia);
       await writeMedias(mediasArray);
-      res.status(201).send({ id: newMedia.imbdId });
+      res.status(201).send({ id: newMedia.imdbID });
     } catch (error) {
       next(error);
     }
@@ -85,7 +85,7 @@ mediasRouter.get("/omdb", async (req, res, next) => {
 mediasRouter.get("/:id", async (req, res, next) => {
   try {
     const mediasArray = await getMedias();
-    const media = mediasArray.find((m) => m.imbdId === req.params.id);
+    const media = mediasArray.find((m) => m.imdbID === req.params.id);
     if (media) {
       res.send(media);
     } else {

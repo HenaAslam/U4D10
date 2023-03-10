@@ -2,7 +2,7 @@ import { checkSchema, validationResult } from "express-validator";
 import createHttpError from "http-errors";
 
 const mediaSchema = {
-  title: {
+  Title: {
     in: ["body"],
     isString: {
       errorMessage: "Title is a mandatory field and needs to be a string",
@@ -13,7 +13,7 @@ const mediaSchema = {
       options: { min: 1 },
     },
   },
-  year: {
+  Year: {
     in: ["body"],
     isString: {
       errorMessage: "Year is a mandatory field and needs to be a string",
@@ -24,7 +24,7 @@ const mediaSchema = {
       options: { min: 1 },
     },
   },
-  type: {
+  Type: {
     in: ["body"],
     isString: {
       errorMessage: "type is a mandatory field and needs to be a string",
@@ -35,7 +35,7 @@ const mediaSchema = {
       options: { min: 1 },
     },
   },
-  poster: {
+  Poster: {
     in: ["body"],
     isString: {
       errorMessage: "poster is a mandatory field and needs to be a string",
