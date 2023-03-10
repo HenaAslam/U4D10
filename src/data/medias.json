@@ -1,16 +1,1 @@
-[
-  {
-    "title": "The Lord of the Rings: The Fellowship of the Ring",
-    "year": "2001",
-    "type": "movie",
-    "poster": "https://res.cloudinary.com/de3p4qjdr/image/upload/v1678445863/medias/poster/pobwtqpqku3dh9rmynfe.jpg",
-    "imbdId": "1q1y34klf2ekha0"
-  },
-  {
-    "title": "The Lord of the Rings: The Fellowship of the Ringggggggggggggggggggg",
-    "year": "2001",
-    "type": "movie",
-    "poster": "https://m.media-amazon.com/images/M/MV5BMTM5MzcwOTg4MF5BMl5BanBnXkFtZTgwOTQwMzQxMDE@._V1_SX300.jpg",
-    "imbdId": "1q1y5rwlf2eo6z7"
-  }
-]
+[{"title":"The Lord of the Rings: The Fellowship of the Ring","year":"2001","type":"movie","poster":"https://res.cloudinary.com/de3p4qjdr/image/upload/v1678445863/medias/poster/pobwtqpqku3dh9rmynfe.jpg","imbdId":"1q1y34klf2ekha0"},{"title":"The Lord of the Rings: The Fellowship of the Ringggggggggggggggggggg","year":"2001","type":"movie","poster":"https://m.media-amazon.com/images/M/MV5BMTM5MzcwOTg4MF5BMl5BanBnXkFtZTgwOTQwMzQxMDE@._V1_SX300.jpg","imbdId":"1q1y5rwlf2eo6z7"},{"title":"avengers","year":"2001","type":"movie","poster":"https://res.cloudinary.com/de3p4qjdr/image/upload/v1678450453/medias/poster/kon2kiu9t16dnc7vic5x.jpg","imbdId":"1q1ygg0lf2i1tcb"}]
