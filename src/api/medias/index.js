@@ -23,7 +23,7 @@ mediasRouter.post(
       const newMedia = {
         ...req.body,
         imdbID: uniqid(),
-        reviews: [],
+        Reviews: [],
       };
       const mediasArray = await getMedias();
       mediasArray.push(newMedia);
@@ -69,7 +69,7 @@ mediasRouter.get("/omdb", async (req, res, next) => {
           if (data.Search.length > 0) {
             let movie = data.Search[0];
             console.log(movie);
-            movie.reviews = [];
+            movie.Reviews = [];
 
             //push to media.json
             //return in response
