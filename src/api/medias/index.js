@@ -2,7 +2,11 @@ import express from "express";
 import createHttpError from "http-errors";
 import uniqid from "uniqid";
 import { getMedias, writeMedias } from "../../lib/fs-tools.js";
-import { checkMediaSchema, triggerBadRequest } from "./validator.js";
+import {
+  checkMediaSchema,
+  triggerBadRequest,
+  checkReviewSchema,
+} from "./validator.js";
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import multer from "multer";
@@ -19,6 +23,7 @@ mediasRouter.post(
       const newMedia = {
         ...req.body,
         imdbID: uniqid(),
+        reviews: [],
       };
       const mediasArray = await getMedias();
       mediasArray.push(newMedia);
@@ -49,9 +54,8 @@ mediasRouter.get("/omdb", async (req, res, next) => {
     const mediasArray = await getMedias();
     if (req.query && req.query.title) {
       const filteredMedias = mediasArray.filter(
-        (m) =>
-          // m.title.toLowerCase().includes(req.query.title.toLowerCase())
-          m.title === req.query.title
+        (m) => m.Title.toLowerCase().includes(req.query.title.toLowerCase())
+        //   m.title === req.query.title
       );
       if (filteredMedias.length === 0) {
         //check if its in omdb
@@ -61,9 +65,12 @@ mediasRouter.get("/omdb", async (req, res, next) => {
 
         if (response.ok) {
           let data = await response.json();
-          let movie = data.Search[0];
-          console.log(movie);
-          if (movie) {
+          console.log(data);
+          if (data.Search.length > 0) {
+            let movie = data.Search[0];
+            console.log(movie);
+            movie.reviews = [];
+
             //push to media.json
             //return in response
             mediasArray.push(movie);
@@ -117,13 +124,13 @@ mediasRouter.post(
         console.log("FILE:", req.file);
 
         const mediasArray = await getMedias();
-        const index = mediasArray.findIndex((m) => m.imbdId === req.params.id);
+        const index = mediasArray.findIndex((m) => m.imdbID === req.params.id);
         if (index !== -1) {
           const oldMedia = mediasArray[index];
           const updatedMeida = {
             ...oldMedia,
 
-            poster: req.file.path,
+            Poster: req.file.path,
           };
           mediasArray[index] = updatedMeida;
           await writeMedias(mediasArray);
@@ -150,7 +157,7 @@ mediasRouter.get("/:id/pdf", async (req, res, next) => {
       `attachment; filename=${req.params.id}.pdf`
     );
     const mediasArray = await getMedias();
-    const media = mediasArray.find((m) => m.imbdId === req.params.id);
+    const media = mediasArray.find((m) => m.imbdID === req.params.id);
     const source = await getPDFReadableStream(media);
     const destination = res;
     pipeline(source, destination, (err) => {
@@ -160,5 +167,46 @@ mediasRouter.get("/:id/pdf", async (req, res, next) => {
     next(error);
   }
 });
+
+mediasRouter.get("/:id/reviews", async (req, res, next) => {
+  try {
+    let mediasArray = await getMedias();
+    let media = mediasArray.find((m) => m.imdbID === req.params.id);
+    if (media) {
+      res.send(media.Reviews);
+    } else {
+      next(createHttpError(404, `movie with id ${req.params.id} not found`));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+mediasRouter.post(
+  "/:id/reviews",
+  checkReviewSchema,
+  triggerBadRequest,
+  async (req, res, next) => {
+    try {
+      const mediasArray = await getMedias();
+      const media = mediasArray.find((m) => m.imdbID === req.params.id);
+      if (media) {
+        const newReview = {
+          ...req.body,
+          _id: uniqid(),
+          createdAt: new Date(),
+          elementId: media.imdbID,
+        };
+        media.Reviews.push(newReview);
+        await writeMedias(mediasArray);
+        res.send(newReview._id);
+      } else {
+        next(createHttpError(404, `media with id ${req.params.id} not found`));
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default mediasRouter;

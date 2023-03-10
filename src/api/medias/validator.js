@@ -42,8 +42,23 @@ const mediaSchema = {
     },
   },
 };
+const reviewSchema = {
+  comment: {
+    in: ["body"],
+    isString: {
+      errorMessage: "comment is a mandatory field and needs to be a string",
+    },
+  },
+  rate: {
+    in: ["body"],
+    isDecimal: {
+      errorMessage: "rate is a mandatory field and needs to be a number",
+    },
+  },
+};
 
 export const checkMediaSchema = checkSchema(mediaSchema);
+export const checkReviewSchema = checkSchema(reviewSchema);
 
 export const triggerBadRequest = (req, res, next) => {
   const errors = validationResult(req);
