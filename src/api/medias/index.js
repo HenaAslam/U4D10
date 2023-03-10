@@ -8,6 +8,7 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 import multer from "multer";
 import { getPDFReadableStream } from "../../lib/pdf-tools.js";
 import { pipeline } from "stream";
+import axios from "axios";
 const mediasRouter = express.Router();
 mediasRouter.post(
   "/",
@@ -31,7 +32,51 @@ mediasRouter.post(
 mediasRouter.get("/", async (req, res, next) => {
   try {
     const mediasArray = await getMedias();
-    res.send(mediasArray);
+    if (req.query && req.query.title) {
+      const filteredMedias = mediasArray.filter((m) =>
+        m.title.toLowerCase().includes(req.query.title.toLowerCase())
+      );
+      res.send(filteredMedias);
+    } else {
+      res.send(mediasArray);
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+mediasRouter.get("/omdb", async (req, res, next) => {
+  try {
+    const mediasArray = await getMedias();
+    if (req.query && req.query.title) {
+      const filteredMedias = mediasArray.filter(
+        (m) =>
+          // m.title.toLowerCase().includes(req.query.title.toLowerCase())
+          m.title === req.query.title
+      );
+      if (filteredMedias.length === 0) {
+        //check if its in omdb
+        let response = await fetch(
+          "https://www.omdbapi.com/?apikey=2404898d&s=" + req.query.title
+        );
+
+        if (response.ok) {
+          let data = await response.json();
+          let movie = data.Search[0];
+          console.log(movie);
+          if (movie) {
+            //push to media.json
+            //return in response
+            mediasArray.push(movie);
+            await writeMedias(mediasArray);
+            res.status(201).send(movie);
+          } else {
+            next(createHttpError(404, "movie not found"));
+          }
+        }
+      } else {
+        res.send(filteredMedias);
+      }
+    }
   } catch (error) {
     next(error);
   }
