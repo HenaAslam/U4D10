@@ -157,7 +157,8 @@ mediasRouter.get("/:id/pdf", async (req, res, next) => {
       `attachment; filename=${req.params.id}.pdf`
     );
     const mediasArray = await getMedias();
-    const media = mediasArray.find((m) => m.imbdID === req.params.id);
+    const media = mediasArray.find((m) => m.imdbID === req.params.id);
+    console.log(media);
     const source = await getPDFReadableStream(media);
     const destination = res;
     pipeline(source, destination, (err) => {

@@ -18,11 +18,12 @@ export const getPDFReadableStream = async (media) => {
   };
 
   const printer = new PdfPrinter(fonts);
-  const posterBase64 = await imageToBase64(media.poster);
+  const posterBase64 = await imageToBase64(media.Poster);
+  console.log(media);
   const content = [
-    { text: media.title, style: "header" },
-    { text: media.year, style: "subheader" },
-    { text: media.type, style: "subheader" },
+    { text: media.Title, style: "header" },
+    { text: media.Year, style: "subheader" },
+    { text: media.Type, style: "subheader" },
 
     { image: `data:image/jpeg;base64,${posterBase64}`, width: 150 },
 
